@@ -4,10 +4,6 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-// In this project I am using "The Standard Template Library (STL) for AVR with C++ streams" (https://andybrown.me.uk/2011/01/15/the-standard-template-library-stl-for-avr-with-c-streams/) so you also have to download and install this
-// Remeber to include in your project:
-// #include <WiFi.h>
-
 class MQTToverSerial
 {
 public:
@@ -20,11 +16,11 @@ public:
     bool Loop();
 
     void SetSpecialCharacter(char _specialCharacter) { specialCharacter = _specialCharacter; };
-    char GetSpecialCharacter() {return specialCharacter;};
+    char GetSpecialCharacter() { return specialCharacter; };
 
     void ReadSerial();
 private:
-    PubSubClient* pubSubClient;
+    PubSubClient* pubSubClient = NULL;
     HardwareSerial &serial;
     WiFiClient &wifiClient;
     const char* &serverIp;
@@ -34,11 +30,11 @@ private:
     const char* &MQTTpass;
     const char* &MQTTid;
 
-    bool connectedToBroker = false;
-
     char specialCharacter = '$';
 
     void Reconnect();
+
+    void Error(const char* buff);
 };
 
 #endif

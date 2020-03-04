@@ -2,8 +2,8 @@
 #include <PubSubClient.h>
 #include "MQTToverSerial.h"
 
-const char* ssid     = "SSID";
-const char* password = "PASS";
+const char* ssid     = "BzdziszewoMajLowe";
+const char* password = "siecdomowa";
 
 WiFiClient wifiClient;
 
@@ -25,10 +25,8 @@ void setup() {
 
   while (WiFi.status() != WL_CONNECTED) {
       delay(500);
-      //Serial.print(".");
   }
 
-  //Serial.println("");
   Serial.println("INFO$WiFi connected");
   Serial.print("INFO$IP address: ");
   Serial.println(WiFi.localIP());

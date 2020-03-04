@@ -1,10 +1,5 @@
 #include "MQTToverSerial.h"
 
-void Test(char* topic, byte* payload, unsigned int length)
-{
-  Serial.println("ODEBRANO");
-}
-
 MQTToverSerial::MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial& _serial, const char* _serverIp, int _serverPort, const char* _MQTTlogin, const char* _MQTTpass, const char* _MQTTid) : wifiClient(_wifiClient), serial(_serial), serverIp(_serverIp), serverPort(_serverPort), MQTTlogin(_MQTTlogin), MQTTpass(_MQTTpass), MQTTid(_MQTTid)
 {
   pubSubClient = new PubSubClient(wifiClient);
@@ -20,19 +15,14 @@ MQTToverSerial::MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial& _serial,
         this->serial.print((char) payload[j]);
       }
       this->serial.println("");
-    });
-  //pubSubClient->setCallback(Test);
+  });
   pubSubClient->connect(MQTTid, MQTTlogin, MQTTpass);
-
-  if (pubSubClient->connected())
-  {
-    connectedToBroker = true;
-  }
 }
 
 MQTToverSerial::~MQTToverSerial()
 {
-
+  if (pubSubClient != NULL)
+    delete pubSubClient;
 }
 
 bool MQTToverSerial::Publish(const char* topic, const char* message)
@@ -60,9 +50,20 @@ bool MQTToverSerial::SubscribeTopic(const char* topic)
     Reconnect();
   }
 
-  pubSubClient->subscribe(topic);
+  return pubSubClient->subscribe(topic);
+}
 
-  return true;
+bool MQTToverSerial::UnsubscribeTopic(const char* topic)
+{
+  if (!pubSubClient->connected())
+  {
+    serial.print("ERROR");
+    serial.print(specialCharacter);
+    serial.println("SubscribeTopic");
+    Reconnect();
+  }
+
+  return pubSubClient->unsubscribe(topic);
 }
 
 void MQTToverSerial::Reconnect()
@@ -109,6 +110,15 @@ void MQTToverSerial::ReadSerial()
         ++i_t;
       }
       ++i;
+
+      if (strlen(topic) == 0)
+      {
+        Error(serialBuffer);
+        
+        memset(serialBuffer, 0, BUFFER_SIZE + 1);
+        continue;
+      }
+      
       while (i < BUFFER_SIZE + 1 && serialBuffer[i] != '\n')
       {
         message[i_m] = serialBuffer[i];
@@ -135,9 +145,21 @@ void MQTToverSerial::ReadSerial()
         ++i_t;
       }
 
+      if (strlen(topic) == 0)
+      {
+        Error(serialBuffer);
+        
+        memset(serialBuffer, 0, BUFFER_SIZE + 1);
+        continue;
+      }
+
       if(!pubSubClient->connected())
         Reconnect();
       SubscribeTopic(topic);
+    }
+    else
+    {
+      Error(serialBuffer);      
     }
     
     memset(serialBuffer, 0, BUFFER_SIZE + 1);
@@ -150,4 +172,11 @@ bool MQTToverSerial::Loop()
     Reconnect();
   }
   return pubSubClient->loop();
+}
+
+void MQTToverSerial::Error(const char* buff)
+{
+    serial.print("ERR_");
+    serial.print(specialCharacter);
+    serial.println(buff);
 }
