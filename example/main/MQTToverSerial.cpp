@@ -1,6 +1,6 @@
 #include "MQTToverSerial.h"
 
-MQTToverSerial::MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial& _serial, const char* _serverIp, int _serverPort, const char* _MQTTlogin, const char* _MQTTpass, const char* _MQTTid) : wifiClient(_wifiClient), serial(_serial), serverIp(_serverIp), serverPort(_serverPort), MQTTlogin(_MQTTlogin), MQTTpass(_MQTTpass), MQTTid(_MQTTid)
+MQTToverSerial::MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial &_serial, const char* _serverIp, int _serverPort, const char* _MQTTlogin, const char* _MQTTpass, const char* _MQTTid) : wifiClient(_wifiClient), serial(_serial), serverIp(_serverIp), serverPort(_serverPort), MQTTlogin(_MQTTlogin), MQTTpass(_MQTTpass), MQTTid(_MQTTid)
 {
   pubSubClient = new PubSubClient(wifiClient);
   pubSubClient->setServer(serverIp, serverPort);
@@ -80,7 +80,7 @@ void MQTToverSerial::Reconnect()
   }
 }
 
-#define BUFFER_SIZE 2000
+#define BUFFER_SIZE 2000 //UART RX buffer size
 
 void MQTToverSerial::ReadSerial()
 {

@@ -1,9 +1,10 @@
+// TESTED ON ESP32 Dev Module
+
 #include <WiFi.h>
-#include <PubSubClient.h>
 #include "MQTToverSerial.h"
 
-const char* ssid     = "BzdziszewoMajLowe";
-const char* password = "siecdomowa";
+const char* ssid     = "SSID";
+const char* password = "PASSWORD";
 
 WiFiClient wifiClient;
 
