@@ -33,8 +33,6 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   mqttClient = new MQTToverSerial(wifiClient, Serial, "192.168.2.1", 1883, "", "", "ESP32-MQTToverSerial");
-
-  mqttClient->SubscribeTopic("demo");
 }
 
 void loop() {

@@ -27,14 +27,6 @@ MQTToverSerial::~MQTToverSerial()
 
 bool MQTToverSerial::Publish(const char* topic, const char* message)
 {
-  if (pubSubClient == NULL)
-  {
-    serial.print("ERROR");
-    serial.print(specialCharacter);
-    serial.println("Publish");
-    Reconnect();
-  }
-
   pubSubClient->publish(topic, message);
 
   return true;
@@ -44,9 +36,6 @@ bool MQTToverSerial::SubscribeTopic(const char* topic)
 {
   if (!pubSubClient->connected())
   {
-    serial.print("ERROR");
-    serial.print(specialCharacter);
-    serial.println("SubscribeTopic");
     Reconnect();
   }
 
@@ -57,9 +46,6 @@ bool MQTToverSerial::UnsubscribeTopic(const char* topic)
 {
   if (!pubSubClient->connected())
   {
-    serial.print("ERROR");
-    serial.print(specialCharacter);
-    serial.println("SubscribeTopic");
     Reconnect();
   }
 
@@ -74,6 +60,9 @@ void MQTToverSerial::Reconnect()
     // Attempt to connect
     if (!pubSubClient->connect(MQTTid, MQTTlogin, MQTTpass)) 
     {
+      serial.print("ERR_");
+      serial.print(specialCharacter);
+      serial.println("No connection with MQTT broker!");
       // Wait 5 seconds before retrying
       delay(5000);
     }
