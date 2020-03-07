@@ -146,6 +146,33 @@ void MQTToverSerial::ReadSerial()
         Reconnect();
       SubscribeTopic(topic);
     }
+    else if (strcmp(command, "UNSB") == 0)
+    {
+      size_t i = 5;
+
+      char topic[BUFFER_SIZE + 1];
+      size_t i_t = 0;
+      memset(topic, 0, BUFFER_SIZE + 1);
+      
+      while (i < BUFFER_SIZE + 1 && serialBuffer[i] != '\n')
+      {
+        topic[i_t] = serialBuffer[i];
+        ++i;
+        ++i_t;
+      }
+
+      if (strlen(topic) == 0)
+      {
+        Error(serialBuffer);
+        
+        memset(serialBuffer, 0, BUFFER_SIZE + 1);
+        continue;
+      }
+
+      if(!pubSubClient->connected())
+        Reconnect();
+      UnsubscribeTopic(topic);
+    }
     else
     {
       Error(serialBuffer);      
