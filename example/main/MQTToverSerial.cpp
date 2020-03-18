@@ -1,6 +1,6 @@
 #include "MQTToverSerial.h"
 
-MQTToverSerial::MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial &_serial, const char* _serverIp, int _serverPort, const char* _MQTTlogin, const char* _MQTTpass, const char* _MQTTid) : wifiClient(_wifiClient), serial(_serial), serverIp(_serverIp), serverPort(_serverPort), MQTTlogin(_MQTTlogin), MQTTpass(_MQTTpass), MQTTid(_MQTTid)
+MQTToverSerial::MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial &_serial, const char* _serverIp, int _serverPort, const char* _MQTTlogin, const char* _MQTTpass, const char* _MQTTid, HardwareSerial* _debugSerial) : wifiClient(_wifiClient), serial(_serial), serverIp(_serverIp), serverPort(_serverPort), MQTTlogin(_MQTTlogin), MQTTpass(_MQTTpass), MQTTid(_MQTTid), debugSerial(_debugSerial)
 {
   pubSubClient = new PubSubClient(wifiClient);
   pubSubClient->setServer(serverIp, serverPort);
@@ -15,6 +15,19 @@ MQTToverSerial::MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial &_serial,
         this->serial.print((char) payload[j]);
       }
       this->serial.println("");
+
+      if (this->debugSerial != NULL)
+      {
+          this->debugSerial->print("MSSG");
+          this->debugSerial->print(specialCharacter);
+          this->debugSerial->print(topic);
+          this->debugSerial->print(specialCharacter);
+          for (unsigned int j = 0; j < length; ++j)
+          {
+            this->debugSerial->print((char) payload[j]);
+          }
+          this->debugSerial->println("");
+      }
   });
   pubSubClient->connect(MQTTid, MQTTlogin, MQTTpass);
 }
@@ -63,6 +76,12 @@ void MQTToverSerial::Reconnect()
       serial.print("ERR_");
       serial.print(specialCharacter);
       serial.println("No connection with MQTT broker!");
+      if (debugSerial != NULL)
+      {
+          debugSerial->print("ERR_");
+          debugSerial->print(specialCharacter);
+          debugSerial->println("No connection with MQTT broker!");
+      }
       // Wait 5 seconds before retrying
       delay(5000);
     }
@@ -77,6 +96,11 @@ void MQTToverSerial::ReadSerial()
   memset(serialBuffer, 0, BUFFER_SIZE + 1);
   while(serial.readBytesUntil('\n', serialBuffer, BUFFER_SIZE))
   {
+    if (debugSerial != NULL)
+    {
+      debugSerial->println(serialBuffer);
+    }
+    
     char command[5];
     strncpy(command, serialBuffer, 4);
     command[4] = '\0';
@@ -195,4 +219,11 @@ void MQTToverSerial::Error(const char* buff)
     serial.print("ERR_");
     serial.print(specialCharacter);
     serial.println(buff);
+    
+    if (debugSerial != NULL)
+    {   
+      debugSerial->print("ERR_");
+      debugSerial->print(specialCharacter);
+      debugSerial->println(buff);
+    }
 }

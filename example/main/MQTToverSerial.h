@@ -7,7 +7,7 @@
 class MQTToverSerial
 {
 public:
-    MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial &_serial, const char* _serverIp, int _serverPort, const char* _MQTTlogin, const char* _MQTTpass, const char* _MQTTid);
+    MQTToverSerial(WiFiClient& _wifiClient, HardwareSerial &_serial, const char* _serverIp, int _serverPort, const char* _MQTTlogin, const char* _MQTTpass, const char* _MQTTid, HardwareSerial* _debugSerial = NULL);
     ~MQTToverSerial();
     bool SubscribeTopic(const char* topic);
     bool UnsubscribeTopic(const char* topic);
@@ -21,6 +21,7 @@ public:
 private:
     PubSubClient* pubSubClient = NULL;
     HardwareSerial &serial;
+    HardwareSerial* debugSerial;
     WiFiClient &wifiClient;
     const char* &serverIp;
     int &serverPort;

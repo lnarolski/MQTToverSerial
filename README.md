@@ -1,14 +1,17 @@
 # MQTToverSerial
+
 Simple library based on [PubSubClient](https://github.com/knolleary/pubsubclient) (with all limitations) for Arduino (tested on ESP32) to communicate with MQTT broker over HardwareSerial connection (tested with UART)
 
 # Table of contents
+
 * [General info](#general-info)
 * [Public methods](#public-methods)
 * [Commands](#commands)
 * [Example](#example)
 
 # General info
-Library allows you to make Serial (e.g. UART) <--> MQTT Broker connections with commands sended via UART. You have to add [PubSubClient](https://github.com/knolleary/pubsubclient) library to your IDE (e.g. Arduino IDE) to compile MQTToverSerial library.
+
+Library allows you to make Serial (e.g. UART) <--> MQTT Broker connections with commands sended via UART.
 
 # Public methods
 
