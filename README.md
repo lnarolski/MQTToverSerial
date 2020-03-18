@@ -15,7 +15,7 @@ Library allows you to make Serial (e.g. UART) <--> MQTT Broker connections with 
 
 # Public methods
 
-In class contructor you have to set connected wifiClient object to communicate via WiFi, HardwareSerial object to communicate via Serial, MQTT broker server IP, MQTT broker server port, MQTT broker server login, MQTT broker server password and your MQTT id.
+In class contructor you have to set connected wifiClient object to communicate via WiFi, HardwareSerial object to communicate via Serial, MQTT broker server IP, MQTT broker server port, MQTT broker server login, MQTT broker server password, your MQTT id and optionally pointer to HardwareSerial for debug.
 
 ## bool SubscribeTopic(const char* topic)
 
